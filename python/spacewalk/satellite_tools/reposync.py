@@ -1120,6 +1120,9 @@ class RepoSync(object):
         downloader.set_log_obj(logger)
         downloader.run()
 
+        log(0, 'Filtering packages that failed to download')
+        to_process = [i for i in to_process if os.path.basename(i[0].path) not in downloader.failed_pkgs]
+
         log2background(0, "Importing packages started.")
         log(0, '')
         log(0, '  Importing packages to DB:')
