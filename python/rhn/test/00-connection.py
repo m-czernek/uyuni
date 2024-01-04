@@ -15,6 +15,7 @@ PROXY = "proxy.example.com:8080"
 system_id_file = '/etc/sysconfig/rhn/systemid'
 
 if len(sys.argv) < 3:
+    #  pylint: disable-next=syntax-error
     print "Non efficient cmd-line arguments! Provide at least server & proxy!"
     sys.exit(1);
 try:

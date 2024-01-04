@@ -1,12 +1,15 @@
 #!/usr/bin/python
+#  pylint: disable=missing-module-docstring,invalid-name
 #
 # Checking if the values encoded in hex (base 16) are properly decoded.
 #
 
 import os
 import sys
+
 filename = "base16values.txt"
 filename = os.path.join(os.path.dirname(sys.argv[0]), filename)
+#  pylint: disable-next=unspecified-encoding
 f = open(filename)
 
 while 1:
@@ -19,4 +22,3 @@ while 1:
     i = int(arr[0])
     val = int(arr[1], 16)
     assert i == val, i
-

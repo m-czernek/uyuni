@@ -14,6 +14,7 @@ try:
     SERVER = sys.argv[1];
     PROXY = sys.argv[2];
 except:
+    #  pylint: disable-next=syntax-error
     print "Non efficient cmd-line arguments! Provide at least server & proxy!"
     sys.exit(1);
 

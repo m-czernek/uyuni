@@ -14,6 +14,7 @@ try:
     system_id_file = sys.argv[2]
 except:
     pass
+#  pylint: disable-next=syntax-error
 print "SERVER = %s" % SERVER
 print "system_id_file = %s" % system_id_file
 

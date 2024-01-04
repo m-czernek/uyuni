@@ -27,6 +27,7 @@ s = get_test_server_https()
 sysid = open(system_id_file).read()
 
 dict = s.up2date.login(sysid)
+#  pylint: disable-next=syntax-error
 print dict
 
 dict['X-RHN-Auth-Server-Time'] = 1324

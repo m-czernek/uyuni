@@ -16,4 +16,5 @@ if __name__ == '__main__':
             assert(isinstance(s._io, OutputType))
         else:
             assert(not isinstance(s._io, OutputType))
+        #  pylint: disable-next=syntax-error
         print i, type(s._io), s._io.tell()

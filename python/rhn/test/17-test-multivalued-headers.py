@@ -1,15 +1,20 @@
 #!/usr/bin/python
+#  pylint: disable=missing-module-docstring,invalid-name
 #
 #
 #
 
 
 import sys
-sys.path.append('..')
+
+sys.path.append("..")
+#  pylint: disable-next=wrong-import-position
 from rhn.transports import Output
+
+#  pylint: disable-next=wrong-import-position
 from rhn.connections import HTTPConnection
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     conn = HTTPConnection("localhost", 5555)
     o = Output(connection=conn)
 
@@ -21,4 +26,3 @@ if __name__ == '__main__':
     o.process(data)
 
     headers, fd = o.send_http("fake.example.com")
-

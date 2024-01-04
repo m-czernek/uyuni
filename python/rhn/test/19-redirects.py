@@ -36,6 +36,7 @@ def main():
         systemid_path = sys.argv[1]
     else:
         systemid_path = "/etc/sysconfig/rhn/systemid"
+        #  pylint: disable-next=syntax-error
         print "Using %s as systemid (command line to override)" % systemid_path
 
     global SYSTEM_ID

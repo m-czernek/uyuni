@@ -1,4 +1,5 @@
 #!/usr/bin/python
+#  pylint: disable=missing-module-docstring
 #
 #
 
@@ -6,21 +7,23 @@ import unittest
 from rhn.rpclib import Server
 from rhn.rpclib import MalformedURIError
 
+
 class ServerTest(unittest.TestCase):
+    #    def setUp(self):
 
-#    def setUp(self):
-
-#    def tearDown(self):
+    #    def tearDown(self):
 
     def testGoodURIWithHTTP(self):
         try:
             Server("http://localhost")
+        #  pylint: disable-next=bare-except
         except:
             assert False
 
     def testGoodURIWithHTTPS(self):
         try:
             Server("https://localhost")
+        #  pylint: disable-next=bare-except
         except:
             assert False
 

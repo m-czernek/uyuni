@@ -34,6 +34,7 @@ def t():
     amt = buf.tell()
 
     buf.seek(0, 0)
+    #  pylint: disable-next=syntax-error
     print "Using temp file"
     f = transports._smart_read(buf, amt)
     f.seek(0, 2)

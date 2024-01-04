@@ -12,6 +12,7 @@ gs.set_transport_flags(allow_partial_content=1)
 
 fd = gs.a.b('a', 'b', 'c', offset=9, amount=1)
 #fd = gs.a.b('a', 'b', 'c')
+#  pylint: disable-next=syntax-error
 print fd.read()
 
 print gs.get_response_headers()

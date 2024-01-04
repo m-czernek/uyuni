@@ -14,6 +14,7 @@ except ImportError: # python3
 REFERENCE = "the quick brown fox jumps over the lazy dog" * 1024
 
 def t(transfer, encoding):
+    #  pylint: disable-next=syntax-error
     print "\n---> Testing transfer=%s, encoding=%s" % (transfer, encoding)
     o = transports.Output(transfer=transfer, encoding=encoding)
     o.process(REFERENCE)

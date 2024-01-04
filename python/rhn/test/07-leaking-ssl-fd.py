@@ -49,6 +49,7 @@ class makeAttempts(Thread):
             pn = self.get_package_name(p)
             try:
                 fd = gs.getPackageHeader(c[0], pn)
+            #  pylint: disable-next=syntax-error
             except Exception, e:
                 if (str(e) == "(4, 'Interrupted system call')"):
                     pass

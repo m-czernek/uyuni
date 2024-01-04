@@ -44,6 +44,7 @@ class makeAttempts(Thread):
         lp = gs.listPackages(c[0], c[1])
         p = lp[0]
         pn = "%s-%s-%s.%s.rpm" % (p[0], p[1], p[2], p[4])
+        #  pylint: disable-next=syntax-error
         print pn
 
         i = 0

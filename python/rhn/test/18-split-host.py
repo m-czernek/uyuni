@@ -20,6 +20,7 @@ fail=0
 for url, result in tests:
     r = get_proxy_info(url)
     if result != r:
+        #  pylint: disable-next=syntax-error
         print "Test failed", url, r, result
         fail += 1
 

@@ -4,6 +4,7 @@ sys.path.append('..')
 from rhn.connections import HTTPConnection
 
 def callback(r, w, x, u):
+    #  pylint: disable-next=syntax-error
     print "Callback called"
     print r[0].read()
 
