@@ -56,6 +56,12 @@ Use the provided script to run `pylint` and `black` over a set of files:
 linting/lint.sh python/spacewalk/satellite_tools/xmlWireSource.py python/spacewalk/satellite_tools/download.py
 ```
 
+You can also pass the `-a` flag to lint modified (but not committed) files:
+
+```
+linting/lint.sh -a
+```
+
 Alternatively, you can use the provided container to run `pylint` and `black` manually:
 
 ```
