@@ -1,0 +1,41 @@
+name: Python checkstyle
+
+on:
+  push:
+    branches:
+      - master
+    paths:
+      - '**.py'
+  pull_request:
+    types:
+      - opened
+      - reopened
+      - synchronize
+    paths:
+      - '**.py'
+
+jobs:
+  checkstyle:
+    runs-on: ubuntu-latest
+    container: registry.opensuse.org/home/mczernek/containers/opensuse_factory_containerfile/uyuni-lint:latest
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - id: files
+      uses: Ana06/get-changed-files@v2.2.0
+      with:
+        filter: '*.py'
+    # Python 2 files fail to parse on Black and Pylint
+    - id: filter_files
+      name: Filter Python 2 files
+      run: |
+        echo "files=$(echo ${{ steps.files.outputs.all }} | awk '{for(i=1;i<=NF;i++) if($i !~ /python\/rhn\/test\//) printf "%s%s", $i, (i==NF?ORS:OFS)}')" >> $GITHUB_OUTPUT
+
+    - name: Run black on files
+      run: |
+        black --check --diff -t py36 ${{ steps.filter_files.outputs.files }}
+
+    - name: Run pylint on files
+      run: |
+        pylint --rcfile=/root/.pylintrc ${{ steps.filter_files.outputs.files }}
