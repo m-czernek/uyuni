@@ -47,9 +47,11 @@ import com.suse.manager.webui.utils.salt.custom.MgrActionChains;
 import com.suse.salt.netapi.AuthModule;
 import com.suse.salt.netapi.calls.LocalCall;
 import com.suse.salt.netapi.calls.SaltSSHConfig;
+import com.suse.salt.netapi.calls.modules.Grains;
 import com.suse.salt.netapi.calls.modules.Match;
 import com.suse.salt.netapi.calls.modules.State;
 import com.suse.salt.netapi.calls.modules.State.ApplyResult;
+import com.suse.salt.netapi.calls.modules.TransactionalUpdate;
 import com.suse.salt.netapi.client.SaltClient;
 import com.suse.salt.netapi.datatypes.AuthMethod;
 import com.suse.salt.netapi.datatypes.PasswordAuth;
@@ -546,17 +548,65 @@ public class SaltSSHService {
                             ))
                     );
 
+            MinionList minionList = new MinionList(parameters.getHost());
             Map<String, Result<SSHResult<Map<String, ApplyResult>>>> result =
                     callSyncSSHInternal(call,
-                            new MinionList(parameters.getHost()),
+                            minionList,
                             Optional.of(roster),
                             parameters.isIgnoreHostKeys(),
                             isSudoUser(parameters.getUser()));
-            return result.get(parameters.getHost());
+
+            Result<SSHResult<Map<String, ApplyResult>>> bootstrapResult = result.get(parameters.getHost());
+            if (bootstrapResult.result().isPresent() && bootstrapResult.result().get().getRetcode() == 0) {
+                rebootIfTransactionalMinion(parameters, roster, minionList);
+            }
+            return bootstrapResult;
         }
         finally {
             tmpKeyFileAbsolutePath.ifPresent(this::cleanUpTempKeyFile);
         }
+    }
+
+    private void rebootIfTransactionalMinion(BootstrapParameters parameters, SaltRoster roster, MinionList minionList) {
+
+        Map<String, Result<SSHResult<Map<String, Object>>>> grainResult;
+        try {
+            grainResult = callSyncSSHInternal(Grains.item(false, "transactional"),
+                minionList,
+                Optional.of(roster),
+                parameters.isIgnoreHostKeys(),
+                isSudoUser(parameters.getUser()));
+        }
+        catch (SaltException e) {
+            LOG.error("Cannot determine if a minion is transactional: {}", e.getMessage());
+            return;
+        }
+
+        Result<SSHResult<Map<String, Object>>> res = grainResult.get(parameters.getHost());
+
+        res.result().ifPresent(
+            r -> {
+                r.getReturn().ifPresent(
+                    ret -> {
+                        if (ret.containsKey("transactional") &&
+                            ret.get("transactional") instanceof Boolean &&
+                            (boolean) ret.get("transactional")) {
+                            try {
+                                callSyncSSHInternal(
+                                    TransactionalUpdate.reboot(),
+                                    minionList,
+                                    Optional.of(roster),
+                                    parameters.isIgnoreHostKeys(),
+                                    isSudoUser(parameters.getUser()));
+                            }
+                            catch (SaltException e) {
+                                LOG.error("Cannot reboot a transactional minion: {}", e.getMessage());
+                            }
+                        }
+                    }
+                );
+            }
+        );
     }
 
     // create temp key absolute path
